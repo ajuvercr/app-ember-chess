@@ -1,12 +1,12 @@
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
-import Band from 'rarwe/models/band';
-import fetch from 'fetch';
+import wait from 'rarwe/utils/wait';
 
 export default class BandsRoute extends Route {
-    @service catalog;
+  @service catalog;
 
-    model() {
-        return this.catalog.fetchAll('bands');
-    }
+  async model() {
+    // await wait(3000);
+    return this.catalog.fetchAll('bands');
+  }
 }

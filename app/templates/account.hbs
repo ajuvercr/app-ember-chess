@@ -1,0 +1,73 @@
+{{page-title 'Account'}}
+<p>Hellow {{@model.current}}</p>
+<div class="flex-auto flex space-x-2 md:space-x-8">
+  <div class="w-1/2" type="submit">
+    <h2
+      class="p-2 flex items-center justify-center rounded-md text-xl bg-blue-300 text-white"
+    >
+      Register
+    </h2>
+    <div class="p-4 flex flex-col space-y-2 md:space-y-8">
+      <div>
+        <input
+          type="text"
+          class="text-gray-800 bg-white rounded-md py-2 px-4"
+          placeholder="Name"
+          value={{this.register.name}}
+          {{on 'input' (fn this.updateName 'register')}}
+        />
+      </div>
+      <div>
+        <input
+          type="text"
+          class="text-gray-800 bg-white rounded-md py-2 px-4"
+          placeholder="password"
+          value={{this.register.password}}
+          {{on 'input' (fn this.updatePw 'register')}}
+        />
+      </div>
+      <button type="button" {{on 'click' this.doRegister}}>
+        Register!
+      </button>
+    </div>
+  </div>
+  <div class="w-1/2" type="button">
+    <h2
+      class="p-2 flex items-center justify-center rounded-md text-xl bg-blue-700 text-white"
+    >
+      Login
+    </h2>
+    <div class="p-4 flex flex-col space-y-2 md:space-y-8">
+      <div>
+        <input
+          type="text"
+          class="text-gray-800 bg-white rounded-md py-2 px-4"
+          placeholder="Name"
+          value={{this.login.name}}
+          {{on 'input' (fn this.updateName 'login')}}
+        />
+      </div>
+      <div>
+        <input
+          type="text"
+          class="text-gray-800 bg-white rounded-md py-2 px-4"
+          placeholder="password"
+          value={{this.login.password}}
+          {{on 'input' (fn this.updatePw 'login')}}
+        />
+      </div>
+      <button type="button" {{on 'click' this.doLogin}}>
+        Log in!
+      </button>
+    </div>
+  </div>
+</div>
+
+<button type="button" {{on 'click' this.checkCurrent}}>
+    Check current
+</button>
+
+<button type="button" {{on 'click' this.doLogout}}>
+    Log out
+</button>
+{{outlet}}

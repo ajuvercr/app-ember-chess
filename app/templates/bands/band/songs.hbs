@@ -2,7 +2,7 @@
 {{#if @model.songs.length}}
   <ul class="text-yellow-400">
     {{#each @model.songs as |song|}}
-      <li class="mb-2">
+      <li class="mb-2" data-test-rr="song-list-item">
         {{song.title}}
         <span class="float-right">
           <StarRating

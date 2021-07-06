@@ -1,0 +1,23 @@
+{{page-title 'Foobar'}}
+<div class="p-4 flex flex-col space-y-2 md:space-y-8">
+  <h1 class="font-bold text-2xl">
+    Hello guys
+  </h1>
+  <button
+    class="p-2 flex items-center justify-center rounded-md text-xl bg-blue-300 text-white"
+    type="button"
+    {{on 'click' (fn this.test1 '/mine' 'test1text_id')}}
+  >
+    Curl /
+  </button>
+  <p id="test1text_id"></p>
+
+    <button
+    class="p-2 flex items-center justify-center rounded-md text-xl bg-blue-300 text-white"
+    type="button"
+    {{on 'click' (fn this.test1 '/mine/query' 'test2text_id')}}
+  >
+    Curl /query
+  </button>
+  <p id="test2text_id"></p>
+</div>
