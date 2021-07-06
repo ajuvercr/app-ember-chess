@@ -16,4 +16,5 @@ Router.map(function () {
   });
   this.route('account');
   this.route('foobar');
+  this.route('chess');
 });
