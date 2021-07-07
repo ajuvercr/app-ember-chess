@@ -16,11 +16,16 @@ export default class Chess {
     this.relationships = relationships;
   }
 
-  doMove(from_x, from_y, to_x, to_y)
-  {
+  doMove(from_x, from_y, to_x, to_y) {
+    this.enpassant = undefined;
     this.isWhiteTurn = !this.isWhiteTurn;
-    this.moves.push(
-      new Move({from_x, from_y, to_x, to_y})
-    );
+    this.moves.push(new Move({ from_x, from_y, to_x, to_y }));
+  }
+
+  doTake(x, y)
+  {
+    console.log("do take", x, y, this.pieces.length);
+    this.pieces = this.pieces.filter(piece => piece.x != x || piece.y != y);
+    console.log(this.pieces.length);
   }
 }

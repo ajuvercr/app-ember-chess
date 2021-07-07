@@ -1,49 +1,8 @@
 {{page-title 'Chess'}}
-{{outlet}}
-<div class="relative">
-  <div
-    class="absolute top-0 left-0 grid grid-cols-8 grid-rows-8 justify-items-stretch"
-    style="width: 500px; height: 500px;"
-  >
-    <Times @times={{8}} as |x|>
-      <Times @times={{8}} as |y|>
-        <div
-          class="{{if (isodd (add x y)) 'bg-black' 'bg-white text-black'}}
-             flex items-center justify-center"
-        >
-          {{x}}
-          x
-          {{y}}
-        </div>
-      </Times>
-    </Times>
-  </div>
-  <div
-    class="absolute top-0 left-0 grid grid-cols-8 grid-rows-8 justify-items-stretch"
-    style="width: 500px; height: 500px; pointer-events: none;"
-  >
-    {{#each @model.pieces as |piece|}}
-    <div
-      class="flex items-center justify-center text-red-700 row-start-{{add piece.y 1}} col-start-{{add piece.x 1}} {{if piece.active 'bg-purple-600 bg-opacity-50'}}"
-      {{on 'click' (fn this.toggleActive piece) }}
-      style="pointer-events: all;"
-    >
-      <img src="/chess/{{if piece.isWhite 'white' 'black'}}/{{piece.type}}.svg"
-        style="object-fit: contain; width:80%; height: 80%; image-rendering: pixelated; image-rendering: -moz-crisp-edges; image-rendering: crisp-edges;" />
-    </div>
-    {{/each}}
-  </div>
-  <div
-    class="absolute top-0 left-0 grid grid-cols-8 grid-rows-8 justify-items-stretch"
-    style="width: 500px; height: 500px; pointer-events: none;"
-  >
-    {{#each @model.options as |option|}}
-    <div
-      class="flex items-center justify-center text-red-700 row-start-{{add option.y 1}} col-start-{{add option.x 1}} bg-gray-700 bg-opacity-50"
-      {{on 'click' (fn this.clickOption option.x option.y) }}
-      style="pointer-events: all; width: 100%; height: 100%;"
-    >
-    </div>
-    {{/each}}
-  </div>
+<div class="h-96 w-96">
+  <ChessGame @game={{@model}}/>
+</div>
+<div class="w-40"></div>
+<div class="h-96 w-96">
+  <ChessGame @game={{create-game "rnbqk1nr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"}}/>
 </div>
