@@ -1,5 +1,12 @@
 import { tracked } from '@glimmer/tracking';
-import { calculateMoves, calculateStraightMoves, inRange, TileState, tileUsage, tileUsedBy } from '../utils/chess';
+import {
+  calculateMoves,
+  calculateStraightMoves,
+  inRange,
+  TileState,
+  tileUsage,
+  tileUsedBy,
+} from '../utils/chess';
 
 export const PieceType = {
   PAWN: 'pawn',
@@ -28,7 +35,7 @@ export default class Piece {
       case PieceType.QUEEN:
         return new Queen(params);
       case PieceType.KING:
-        return new King(params)
+        return new King(params);
     }
   }
 
@@ -85,31 +92,60 @@ export class Pawn extends Piece {
       const secondMove = { x: this.x, y: this.y + 2 * this.delta, piece: this };
 
       moves.push(firstMove);
-      if (tileUsedBy(this.game, firstMove, this.isWhite, TileState.EMPTY, TileState.ENEMY))
+      if (
+        tileUsedBy(
+          this.game,
+          firstMove,
+          this.isWhite,
+          TileState.EMPTY,
+          TileState.ENEMY
+        )
+      )
         moves.push(secondMove);
     } else {
-      if (firstUsage == TileState.EMPTY)
-        moves.push(firstMove);
+      if (firstUsage == TileState.EMPTY) moves.push(firstMove);
     }
 
     const attackLeft = { x: this.x + 1, y: this.y + this.delta, piece: this };
-    if (tileUsedBy(this.game, attackLeft, this.isWhite, TileState.ENEMY, TileState.ENPASSANT))
+    if (
+      tileUsedBy(
+        this.game,
+        attackLeft,
+        this.isWhite,
+        TileState.ENEMY,
+        TileState.ENPASSANT
+      )
+    )
       moves.push(attackLeft);
 
     const attackRight = { x: this.x - 1, y: this.y + this.delta, piece: this };
-    if (tileUsedBy(this.game, attackRight, this.isWhite, TileState.ENEMY, TileState.ENPASSANT))
+    if (
+      tileUsedBy(
+        this.game,
+        attackRight,
+        this.isWhite,
+        TileState.ENEMY,
+        TileState.ENPASSANT
+      )
+    )
       moves.push(attackRight);
 
     return moves;
   }
 
-
   move(x, y) {
     // Took previous enpassant
-    if (this.game.enpassant && this.game.enpassant.x == x && this.game.enpassant.y == y)
+    if (
+      this.game.enpassant &&
+      this.game.enpassant.x == x &&
+      this.game.enpassant.y == y
+    )
       this.game.doTake(this.game.enpassant.x, this.y);
 
-    const enpassant = Math.abs(y - this.y) == 2 ? { x: this.x, y: this.y + this.delta } : undefined;
+    const enpassant =
+      Math.abs(y - this.y) == 2
+        ? { x: this.x, y: this.y + this.delta }
+        : undefined;
     super.move(x, y);
 
     this.game.enpassant = enpassant;
@@ -121,14 +157,18 @@ export class Bishop extends Piece {
 
   calculateOptions() {
     const moves = [];
-    for (let delta of [{ x: 1, y: 1 }, { x: -1, y: 1 }, { x: 1, y: -1 }, { x: -1, y: -1 }]) {
+    for (let delta of [
+      { x: 1, y: 1 },
+      { x: -1, y: 1 },
+      { x: 1, y: -1 },
+      { x: -1, y: -1 },
+    ]) {
       moves.push(...calculateStraightMoves(this.game, this, delta));
     }
 
     return moves;
   }
 }
-
 
 export class Knight extends Piece {
   type = PieceType.KNIGHT;
@@ -137,20 +177,49 @@ export class Knight extends Piece {
     const moves = [];
 
     // vertical big, horizontal small
-    for (let d1 of [{ x: 0, y: 2 }, { x: 0, y: -2 },]) {
-      for (let d2 of [{ x: 1, y: 0 }, { x: -1, y: 0 }]) {
-          const current = {x: this.x + d2.x, y: this.y + d1.y, piece: this };
-          if(inRange(current) && tileUsedBy(this.game, current, this.isWhite, TileState.EMPTY, TileState.ENEMY))
-            moves.push(current);
+    for (let d1 of [
+      { x: 0, y: 2 },
+      { x: 0, y: -2 },
+    ]) {
+      for (let d2 of [
+        { x: 1, y: 0 },
+        { x: -1, y: 0 },
+      ]) {
+        const current = { x: this.x + d2.x, y: this.y + d1.y, piece: this };
+        if (
+          inRange(current) &&
+          tileUsedBy(
+            this.game,
+            current,
+            this.isWhite,
+            TileState.EMPTY,
+            TileState.ENEMY
+          )
+        )
+          moves.push(current);
       }
     }
 
-
     // horizontal big, vertical small
-    for (let d1 of [{ x: 2, y: 0 }, { x: -2, y: 0 }]) {
-      for (let d2 of [{ x: 0, y: 1 }, { x: 0, y: -1 },]) {
-        const current = {x: this.x + d1.x, y: this.y + d2.y, piece: this };
-        if(inRange(current) && tileUsedBy(this.game, current, this.isWhite, TileState.EMPTY, TileState.ENEMY))
+    for (let d1 of [
+      { x: 2, y: 0 },
+      { x: -2, y: 0 },
+    ]) {
+      for (let d2 of [
+        { x: 0, y: 1 },
+        { x: 0, y: -1 },
+      ]) {
+        const current = { x: this.x + d1.x, y: this.y + d2.y, piece: this };
+        if (
+          inRange(current) &&
+          tileUsedBy(
+            this.game,
+            current,
+            this.isWhite,
+            TileState.EMPTY,
+            TileState.ENEMY
+          )
+        )
           moves.push(current);
       }
     }
@@ -164,7 +233,12 @@ export class Rook extends Piece {
 
   calculateOptions() {
     const moves = [];
-    for (let delta of [{ x: 0, y: 1 }, { x: 0, y: -1 }, { x: 1, y: 0 }, { x: -1, y: 0 }]) {
+    for (let delta of [
+      { x: 0, y: 1 },
+      { x: 0, y: -1 },
+      { x: 1, y: 0 },
+      { x: -1, y: 0 },
+    ]) {
       moves.push(...calculateStraightMoves(this.game, this, delta));
     }
 
@@ -177,8 +251,16 @@ export class Queen extends Piece {
 
   calculateOptions() {
     const moves = [];
-    for (let delta of [{ x: 0, y: 1 }, { x: 0, y: -1 }, { x: 1, y: 0 }, { x: -1, y: 0 },
-    { x: 1, y: 1 }, { x: -1, y: 1 }, { x: 1, y: -1 }, { x: -1, y: -1 }]) {
+    for (let delta of [
+      { x: 0, y: 1 },
+      { x: 0, y: -1 },
+      { x: 1, y: 0 },
+      { x: -1, y: 0 },
+      { x: 1, y: 1 },
+      { x: -1, y: 1 },
+      { x: 1, y: -1 },
+      { x: -1, y: -1 },
+    ]) {
       moves.push(...calculateStraightMoves(this.game, this, delta));
     }
     return moves;
@@ -189,10 +271,30 @@ export class King extends Piece {
   type = PieceType.KING;
 
   calculateOptions() {
-    return [{ x: 0, y: 1 }, { x: 0, y: -1 }, { x: 1, y: 0 }, { x: -1, y: 0 },
-    { x: 1, y: 1 }, { x: -1, y: 1 }, { x: 1, y: -1 }, { x: -1, y: -1 }]
-      .map((delta) => ({ 'x': this.x + delta.x, 'y': this.y + delta.y, "piece": this }))
+    return [
+      { x: 0, y: 1 },
+      { x: 0, y: -1 },
+      { x: 1, y: 0 },
+      { x: -1, y: 0 },
+      { x: 1, y: 1 },
+      { x: -1, y: 1 },
+      { x: 1, y: -1 },
+      { x: -1, y: -1 },
+    ]
+      .map((delta) => ({
+        x: this.x + delta.x,
+        y: this.y + delta.y,
+        piece: this,
+      }))
       .filter(inRange)
-      .filter(current => tileUsedBy(this.game, current, this.isWhite, TileState.EMPTY, TileState.ENEMY));
+      .filter((current) =>
+        tileUsedBy(
+          this.game,
+          current,
+          this.isWhite,
+          TileState.EMPTY,
+          TileState.ENEMY
+        )
+      );
   }
 }

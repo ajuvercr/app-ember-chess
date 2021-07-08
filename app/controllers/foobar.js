@@ -1,6 +1,7 @@
 import Controller from '@ember/controller';
 import { action } from '@ember/object';
 import { tracked } from 'tracked-built-ins';
+import { inject as service } from '@ember/service';
 
 function syntaxHighlight(json) {
   if (typeof json != 'string') {
@@ -31,8 +32,7 @@ function syntaxHighlight(json) {
 }
 
 export default class FoobarController extends Controller {
-  @tracked test1text;
-  @tracked test2text;
+  @service chess;
 
   constructor() {
     super(...arguments);
@@ -46,6 +46,19 @@ export default class FoobarController extends Controller {
     let response = await fetch(url);
     let json = await response.json();
     console.log(json);
+    document.getElementById(id).innerHTML = syntaxHighlight(json);
+  }
+
+  @action
+  async test2(id) {
+    let json = await this.chess.create();
+    document.getElementById(id).innerHTML = syntaxHighlight(json);
+    this.currentId = json.id;
+  }
+
+  @action
+  async test3(id) {
+    let json = await this.chess.move(this.currentId);
     document.getElementById(id).innerHTML = syntaxHighlight(json);
   }
 }

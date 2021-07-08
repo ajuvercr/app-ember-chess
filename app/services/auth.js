@@ -1,13 +1,67 @@
 import Service from '@ember/service';
-import { tracked } from 'tracked-built-ins';
+import { tracked } from '@glimmer/tracking';
 import fetch from 'fetch';
 
+class User {
+  @tracked name;
+  constructor() {
+    this.name = '';
+    this.id = '';
+  }
+
+  reset() {
+    this.name = '';
+    this.id = undefined;
+  }
+}
+
 export default class AuthService extends Service {
-  @tracked storage = {};
+  user = new User();
 
   constructor() {
     super(...arguments);
-    this.storage.user = tracked({});
+  }
+
+  async update_current() {
+    const result = await this._current();
+    if (result.status != 200) {
+      console.log('invalid session');
+      this.user.reset();
+      return;
+    }
+
+    const session = await result.json();
+
+    const account_id = session.relationships.account.data.id;
+    this.user.id = account_id;
+    const query = `
+    PREFIX  mu:  <http://mu.semte.ch/vocabularies/>
+    PREFIX  muCore:  <http://mu.semte.ch/vocabularies/core/>
+    PREFIX  muExt:  <http://mu.semte.ch/vocabularies/ext/>
+    PREFIX  session:  <http://mu.semte.ch/vocabularies/session/>
+    PREFIX  sh:  <http://schema.org/>
+    PREFIX  foaf:  <http://xmlns.com/foaf/0.1/>
+
+    SELECT ?name  WHERE
+    {
+        ?a muCore:uuid '${account_id}';
+          foaf:accountName ?name.
+    }`;
+
+    const sparql = await fetch('/sparql', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+      },
+      body: new URLSearchParams({
+        query,
+      }),
+    });
+    const account = await sparql.json();
+
+    const bindings = account.results.bindings;
+    if (bindings.length) this.user.name = bindings[0].name.value;
+    else this.user.reset();
   }
 
   async _log(name, password, url) {}
@@ -19,9 +73,6 @@ export default class AuthService extends Service {
         console.log('Current ' + method + ' failed: ' + error);
       }
     );
-
-    console.log('_current');
-    console.log(result);
 
     return result;
   }
@@ -46,18 +97,20 @@ export default class AuthService extends Service {
       console.log('Log /sessions failed: ' + error);
     });
 
-    console.log('login', name, password, '/sessions');
-    console.log(result);
+    this.update_current();
 
     return result;
   }
 
   async logout() {
-    return await this._current('DELETE');
+    const result = await this._current('DELETE');
+    this.update_current();
+    return result;
   }
 
   async current() {
-    return await this._current('GET');
+    await this.update_current();
+    return this.user;
   }
 
   async register(name, password) {

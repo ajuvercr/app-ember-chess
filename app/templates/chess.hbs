@@ -1,8 +1,8 @@
 {{page-title 'Chess'}}
+{{#each-in @model as |key meta|}}
+{{meta.id}}
 <div class="h-96 w-96">
-  <ChessGame @game={{@model}}/>
+  <ChessGame @game={{meta.game}}/>
+  <div class="w-40"></div>
 </div>
-<div class="w-40"></div>
-<div class="h-96 w-96">
-  <ChessGame @game={{create-game "rnbqk1nr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"}}/>
-</div>
+{{/each-in}}

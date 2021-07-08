@@ -1,7 +1,7 @@
 <div class="h-full w-full relative">
   <div
     class="absolute top-0 left-0 bottom-0 right-0 grid grid-cols-8 grid-rows-8 justify-items-stretch"
-    {{on 'click' (fn this.resetClick)}}
+    {{on 'click' this.resetClick}}
   >
     <Times @times={{8}} as |x|>
       <Times @times={{8}} as |y|>

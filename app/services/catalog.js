@@ -54,6 +54,8 @@ export default class CatalogService extends Service {
   }
 
   _loadResource(data) {
+    console.log('_loadResource', data);
+
     let record;
     let { id, type, attributes, relationships } = data;
     if (type === 'bands') {
@@ -70,6 +72,7 @@ export default class CatalogService extends Service {
   }
 
   async create(type, attributes, relationships = {}) {
+    console.log('create', type, attributes, relationships);
     let payload = {
       data: {
         type: type === 'band' ? 'bands' : 'songs',

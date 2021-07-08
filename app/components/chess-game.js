@@ -17,13 +17,13 @@ export default class ChessGameComponent extends Component {
   @action
   clickOption(x, y) {
     if (this.currentPiece) {
-        this.currentPiece.move(x, y);
+      this.currentPiece.move(x, y);
       this.currentPiece = undefined;
     }
   }
 
   @action
   resetClick() {
-    if(this.currentPiece) this.currentPiece.toggle();
+    if (this.currentPiece) this.currentPiece.toggle();
   }
 }

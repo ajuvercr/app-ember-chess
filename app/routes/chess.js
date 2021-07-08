@@ -1,21 +1,22 @@
 import Route from '@ember/routing/route';
 import { createGame } from '../utils/chess';
+import { inject as service } from '@ember/service';
 
 export default class ChessRoute extends Route {
+  @service chess;
+
   queryParams = {
     position: {
       as: 's',
     },
   };
 
-  model(params, transition) {
-    const input =
-      params.position ??
-      'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
-    return createGame(input);
-  }
-
-  resetController(controller) {
-    controller.currentPiece = undefined;
+  async model() {
+    await this.chess.fetchAll('/games');
+    for(let chess in this.chess.storage.games)
+    {
+      this.chess.storage.games[chess].init();
+    }
+    return this.chess.storage.games;
   }
 }

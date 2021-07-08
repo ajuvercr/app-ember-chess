@@ -77,5 +77,6 @@
     "edition": "octane"
   },
   "dependencies": {
+    "sparql-client-2": "https://github.com/erikap/node-sparql-client.git"
   }
 }
