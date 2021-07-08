@@ -14,6 +14,7 @@ class Data {
 
 export default class AccountController extends Controller {
   @service auth;
+
   @tracked login = new Data();
   @tracked register = new Data();
 

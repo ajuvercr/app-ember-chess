@@ -4,6 +4,9 @@ import { isArray } from '@ember/array';
 import GameMeta from '../models/game_meta';
 import Move from '../models/move';
 
+import { inject as service } from '@ember/service';
+
+
 function extractRelationships(object) {
     let relationships = {};
 
@@ -16,11 +19,33 @@ function extractRelationships(object) {
 
 export default class ChessService extends Service {
     @tracked storage = {};
+    @service('websockets') websockets;
 
     constructor() {
         super(...arguments);
         this.storage.games = tracked({});
         this.storage.moves = tracked({});
+
+        const socket = this.websockets.socketFor(`ws://${window.location.hostname}:8080/`);
+
+        socket.on('open', this.myOpenHandler.bind(this));
+        socket.on('message', this.myMessageHandler.bind(this));
+        socket.on('close', this.myCloseHandler.bind(this));
+
+        this.socketRef = socket;
+    }
+
+    myOpenHandler(event) {
+        console.log(`On open event has been called:`, event);
+        this.socketRef.send("Hallo ws!");
+    }
+
+    myMessageHandler(event) {
+        console.log(`Message: ${event.data}`);
+    }
+
+    myCloseHandler(event) {
+        console.log(`On close event has been called:`, event);
     }
 
     async fetchAll(url) {
