@@ -1,0 +1,36 @@
+{{page-title 'Chess'}}
+<div class='flex flex-col gap-5'>
+  <div class='flex flew-row items-baseline gap-5'>
+    {{#if this.auth.user.name}}
+      <p>
+        Welcome
+        {{this.auth.user.name}}
+      </p>
+      <button
+        class="p-2 flex items-center justify-center rounded-md text-xl bg-blue-300 text-white"
+        type="button"
+        {{on 'click' this.createGame}}
+      >
+        Create game!
+      </button>
+    {{else}}
+      <p>
+        Don't forget to log in!
+      </p>
+    {{/if}}
+  </div>
+  <div class="flex flew-row items-baseline gap-5 flex-wrap">
+    {{#each-in @model as |key meta|}}
+      <div class="h-96 w-96">
+        <LinkTo @route="chess" @model={{meta.id}}>
+          <ChessGame @game={{meta.game}} />
+          <div class="flex gap-5 w-full	justify-center">
+            <span>{{await (accountname meta.white)}}</span>
+            <span>VS</span>
+            <span>{{await (accountname meta.black)}}</span>
+          </div>
+        </LinkTo>
+      </div>
+    {{/each-in}}
+  </div>
+</div>

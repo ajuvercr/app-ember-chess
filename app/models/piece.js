@@ -1,4 +1,5 @@
 import { tracked } from '@glimmer/tracking';
+
 import {
   calculateMoves,
   calculateStraightMoves,
@@ -54,7 +55,7 @@ export default class Piece {
   }
 
   toggle() {
-    if (this.isWhite != this.game.isWhiteTurn) {
+    if (!this.game.canMove(this.isWhite)) {
       this.options = [];
       this.game.options = [];
       this.active = false;
@@ -83,24 +84,16 @@ export class Pawn extends Piece {
     const firstMove = { x: this.x, y: this.y + this.delta, piece: this };
     const moves = [];
 
-    if (tileUsedBy(
-      this.game,
-      firstMove,
-      this.isWhite,
-      TileState.EMPTY
-    )) {
+    if (tileUsedBy(this.game, firstMove, this.isWhite, TileState.EMPTY)) {
       moves.push(firstMove);
       const secondMove = { x: this.x, y: this.y + 2 * this.delta, piece: this };
-      if (this.y == startPos && tileUsedBy(
-        this.game,
-        secondMove,
-        this.isWhite,
-        TileState.EMPTY
-      )) {
+      if (
+        this.y == startPos &&
+        tileUsedBy(this.game, secondMove, this.isWhite, TileState.EMPTY)
+      ) {
         moves.push(secondMove);
       }
     }
-
 
     const attackLeft = { x: this.x + 1, y: this.y + this.delta, piece: this };
     if (

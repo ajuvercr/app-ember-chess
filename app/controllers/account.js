@@ -14,6 +14,7 @@ class Data {
 
 export default class AccountController extends Controller {
   @service auth;
+  @service router;
 
   @tracked login = new Data();
   @tracked register = new Data();
@@ -37,6 +38,11 @@ export default class AccountController extends Controller {
     console.log('Logging in');
     await this.auth.login(this.login.name, this.login.password);
     this.login = new Data();
+    if(this.auth.user.id)
+    {
+      console.log("here");
+      this.router.transitionTo('chesshub');
+    }
   }
 
   @action

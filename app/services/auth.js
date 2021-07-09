@@ -11,15 +11,18 @@ class User {
 
   reset() {
     this.name = '';
-    this.id = undefined;
+    this.id = '';
   }
 }
 
 export default class AuthService extends Service {
   user = new User();
 
+  tmpName = 'HALLO';
+
   constructor() {
     super(...arguments);
+    this.current();
   }
 
   async update_current() {
@@ -97,7 +100,7 @@ export default class AuthService extends Service {
       console.log('Log /sessions failed: ' + error);
     });
 
-    this.update_current();
+    await this.update_current();
 
     return result;
   }

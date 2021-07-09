@@ -1,7 +1,47 @@
 {{page-title 'Chess'}}
-{{#each-in @model as |key meta|}}
 <div class="h-96 w-96">
-  <ChessGame @game={{meta.game}}/>
+  <ChessGame @game={{@model.game}} />
+</div>
+<div class="ml-8 grid grid-rows-2 grid-cols-2 mb-auto gap-5 items-baseline">
+  <span>
+    white
+  </span>
+  {{#if @model.white}}
+    <span>
+      {{await (accountname @model.white)}}
+    </span>
+  {{else if this.auth.user.name}}
+    <button
+      class="p-2 flex items-center justify-center rounded-md bg-blue-300 text-white"
+      type="button"
+      {{on 'click' (fn this.setWhite @model.id this.auth.user.id)}}
+    >
+      Participate
+    </button>
+  {{else}}
+    <span>
+      Log in to participate
+    </span>
+  {{/if}}
+  <span>
+    black
+  </span>
+  {{#if @model.black}}
+    <span>
+      {{await (accountname @model.black)}}
+    </span>
+  {{else if this.auth.user.name}}
+    <button
+      type="button"
+      class="p-2 flex items-center justify-center rounded-md bg-blue-300 text-white"
+      {{on 'click' (fn this.setBlack @model.id this.auth.user.id)}}
+    >
+      Participate
+    </button>
+  {{else}}
+    <span>
+      Log in to participate
+    </span>
+  {{/if}}
 </div>
 <div class="w-10"></div>
-{{/each-in}}

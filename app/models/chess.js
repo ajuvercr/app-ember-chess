@@ -14,18 +14,21 @@ export default class Chess {
     this.relationships = relationships;
   }
 
-  applyMove(fromx, fromy, tox, toy)
-  {
+  canMove(whitePiece) {
+    if (this.isWhiteTurn != whitePiece) return false;
+    return this.meta.account_can_move(this.isWhiteTurn);
+  }
+
+  applyMove(fromx, fromy, tox, toy) {
     this.doTake(tox, toy);
-    for(let piece of this.pieces)
-    {
-      if(piece.x === fromx && piece.y === fromy)
-      {
-        piece.x = tox; piece.y = toy;
+    for (let piece of this.pieces) {
+      if (piece.x === fromx && piece.y === fromy) {
+        piece.x = tox;
+        piece.y = toy;
         return;
       }
     }
-    console.error("Move not found");
+    console.error('Move not found');
   }
 
   doMove(fromx, fromy, tox, toy, notify_meta = true) {
