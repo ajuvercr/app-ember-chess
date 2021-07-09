@@ -49,10 +49,7 @@ export default class Piece {
   }
 
   move(x, y) {
-    this.game.doTake(x, y);
     this.game.doMove(this.x, this.y, x, y);
-    this.x = x;
-    this.y = y;
     this.toggle();
   }
 
@@ -84,27 +81,26 @@ export class Pawn extends Piece {
   calculateOptions() {
     const startPos = this.isWhite ? 6 : 1;
     const firstMove = { x: this.x, y: this.y + this.delta, piece: this };
-    const firstUsage = tileUsage(this.game, firstMove, this.isWhite);
-
     const moves = [];
 
-    if (this.y == startPos && firstUsage == TileState.EMPTY) {
-      const secondMove = { x: this.x, y: this.y + 2 * this.delta, piece: this };
-
+    if (tileUsedBy(
+      this.game,
+      firstMove,
+      this.isWhite,
+      TileState.EMPTY
+    )) {
       moves.push(firstMove);
-      if (
-        tileUsedBy(
-          this.game,
-          firstMove,
-          this.isWhite,
-          TileState.EMPTY,
-          TileState.ENEMY
-        )
-      )
+      const secondMove = { x: this.x, y: this.y + 2 * this.delta, piece: this };
+      if (this.y == startPos && tileUsedBy(
+        this.game,
+        secondMove,
+        this.isWhite,
+        TileState.EMPTY
+      )) {
         moves.push(secondMove);
-    } else {
-      if (firstUsage == TileState.EMPTY) moves.push(firstMove);
+      }
     }
+
 
     const attackLeft = { x: this.x + 1, y: this.y + this.delta, piece: this };
     if (

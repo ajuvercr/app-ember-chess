@@ -17,9 +17,11 @@ export default class GameMeta {
     {
         this.game = createGame(this.start, this);
 
+        this.moves.sort((a, b) => a.index - b.index);
         for (let move of this.moves) {
+            console.log(move.index, move);
             let { fromx, fromy, tox, toy } = move;
-            this.game.applyMove(fromx, fromy, tox, toy);
+            this.game.doMove(fromx, fromy, tox, toy,false);
         }
 
         this.game.isWhiteTurn = this.moves.length % 2 == 0;
@@ -27,6 +29,19 @@ export default class GameMeta {
 
 
     notify_move(move) {
-        this.chess.move(this.id, move);
+        this.moves.push(move);
+        this.chess.move(this.id, this.moves.length, move);
+    }
+
+    add_move(move)
+    {
+        if(move.index > this.moves.length)
+        {
+            this.moves.push(move);
+
+            let { fromx, fromy, tox, toy } = move;
+
+            this.game.doMove(fromx, fromy, tox, toy, false);
+        }
     }
 }

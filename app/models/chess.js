@@ -31,6 +31,8 @@ export default class Chess {
   doMove(fromx, fromy, tox, toy, notify_meta = true) {
     this.enpassant = undefined;
     this.isWhiteTurn = !this.isWhiteTurn;
+    this.applyMove(fromx, fromy, tox, toy);
+
     if (notify_meta)
       this.meta.notify_move(new Move({ fromx, fromy, tox, toy }));
   }

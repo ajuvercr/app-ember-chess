@@ -41,11 +41,24 @@ export default class ChessService extends Service {
     }
 
     myMessageHandler(event) {
-        console.log(`Message: ${event.data}`);
+        const { tag, action } = JSON.parse(event.data);
+        if (tag === "move") {
+            console.log("move", action);
+            console.log(this.storage.games[action.gameid]);
+            this.storage.games[action.gameid].add_move(action);
+        }
     }
 
     myCloseHandler(event) {
         console.log(`On close event has been called:`, event);
+
+        setTimeout(
+            this.try_reconnect.bind(this), 500
+        );
+    }
+
+    try_reconnect() {
+        this.socketRef.reconnect();
     }
 
     async fetchAll(url) {
@@ -133,16 +146,26 @@ export default class ChessService extends Service {
         return await this.load(data);
     }
 
-    async move(id, move = { fromx: 0, fromy: 0, tox: 0, toy: 0 }) {
+    async move(id, index, move = { fromx: 0, fromy: 0, tox: 0, toy: 0 }) {
+        const attributes = {
+            fromx: move.fromx,
+            fromy: move.fromy,
+            tox: move.tox,
+            toy: move.toy,
+            gameid: id,
+            index,
+        };
+
         const payload = {
             data: {
                 type: 'moves',
-                attributes: move,
+                attributes,
                 relationships: {
                     game: { data: { id, type: 'games' } },
                 },
             },
         };
+        console.log("moving at game", id, index, move, payload);
 
         let response = await fetch('/moves', {
             method: 'POST',
